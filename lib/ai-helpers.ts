@@ -1,5 +1,9 @@
-import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { OpenAI } from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
 
 export async function generateQuestion(
   skills: string[],
@@ -46,14 +50,14 @@ export async function generateQuestion(
       );
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt,
+    const chatCompletion = await openai.chat.completions.create({
+      model: "gpt-4o", // or gpt-4 / gpt-3.5-turbo
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      maxTokens: 1000,
+      max_tokens: 1000,
     });
 
-    return text;
+    return chatCompletion.choices[0].message.content || "";
   } catch (error) {
     console.error("Error generating question:", error);
     if (error instanceof Error) {
@@ -94,14 +98,14 @@ export async function evaluateCode(
       );
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt,
+    const chatCompletion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
-      maxTokens: 1500,
+      max_tokens: 1500,
     });
 
-    return text;
+    return chatCompletion.choices[0].message.content ?? "";
   } catch (error) {
     console.error("Error evaluating code:", error);
     if (error instanceof Error) {
@@ -146,12 +150,14 @@ export async function generateFollowUpQuestions(
       );
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt,
+    const chatCompletion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      maxTokens: 800,
+      max_tokens: 800,
     });
+
+    const text = chatCompletion.choices[0].message.content || "";
 
     // Parse the numbered list into an array of questions
     const questions = text
@@ -201,14 +207,14 @@ export async function generateAssessment(
       );
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt,
+    const chatCompletion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
       temperature: 0.4,
-      maxTokens: 1500,
+      max_tokens: 1500,
     });
 
-    return text;
+    return chatCompletion.choices[0].message.content ?? "";
   } catch (error) {
     console.error("Error generating assessment:", error);
     if (error instanceof Error) {

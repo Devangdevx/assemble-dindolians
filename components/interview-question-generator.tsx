@@ -48,6 +48,7 @@ export default function InterviewQuestionGenerator({
   const [difficulty, setDifficulty] = useState<string>("medium");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [generatedQuestion, setGeneratedQuestion] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const toggleSkill = (skillId: string) => {
     setSelectedSkills((prev) =>
@@ -82,7 +83,7 @@ export default function InterviewQuestionGenerator({
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      alert(errorMessage);
+      setError(errorMessage);
     } finally {
       setIsGenerating(false);
     }
