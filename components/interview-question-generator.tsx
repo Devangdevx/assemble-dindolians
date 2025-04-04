@@ -1,87 +1,100 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import { generateQuestion } from "@/lib/ai-helpers"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { generateQuestion } from "@/lib/ai-helpers";
 
 interface Skill {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
-const skills: Skill[] = [
+export const skills: Skill[] = [
   { id: "react", name: "React" },
+  { id: "next", name: "Next" },
   { id: "nodejs", name: "Node.js" },
   { id: "javascript", name: "JavaScript" },
-  { id: "typescript", name: "TypeScript" },
-  { id: "python", name: "Python" },
-  { id: "java", name: "Java" },
-  { id: "csharp", name: "C#" },
-  { id: "sql", name: "SQL" },
-  { id: "algorithms", name: "Algorithms" },
-  { id: "data-structures", name: "Data Structures" },
-]
+  { id: "typescript", name: "JavaScript + TypeScript" },
+  { id: "react-native", name: "React Native" },
+];
 
 interface InterviewQuestionGeneratorProps {
-  interviewType: string
-  onQuestionGenerated: (question: string) => void
+  interviewType: string;
+  onQuestionGenerated: (question: string) => void;
 }
 
 export default function InterviewQuestionGenerator({
   interviewType,
   onQuestionGenerated,
 }: InterviewQuestionGeneratorProps) {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  const [difficulty, setDifficulty] = useState<string>("medium")
-  const [isGenerating, setIsGenerating] = useState<boolean>(false)
-  const [generatedQuestion, setGeneratedQuestion] = useState<string>("")
-  const [error, setError] = useState<string>("")
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [difficulty, setDifficulty] = useState<string>("medium");
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [generatedQuestion, setGeneratedQuestion] = useState<string>("");
 
   const toggleSkill = (skillId: string) => {
-    setSelectedSkills((prev) => (prev.includes(skillId) ? prev.filter((id) => id !== skillId) : [...prev, skillId]))
-  }
+    setSelectedSkills((prev) =>
+      prev.includes(skillId)
+        ? prev.filter((id) => id !== skillId)
+        : [...prev, skillId]
+    );
+  };
 
   const handleGenerateQuestion = async () => {
     if (selectedSkills.length === 0) {
-      setError("Please select at least one skill")
-      return
+      alert("Please select at least one skill");
+      return;
     }
 
-    setIsGenerating(true)
-    setError("")
-
+    setIsGenerating(true);
     try {
-      const selectedSkillNames = selectedSkills.map((id) => skills.find((skill) => skill.id === id)?.name || id)
+      const selectedSkillNames = selectedSkills.map(
+        (id) => skills.find((skill) => skill.id === id)?.name || id
+      );
 
-      // Using a setTimeout to simulate API call delay
-      setTimeout(async () => {
-        try {
-          const question = await generateQuestion(selectedSkillNames, difficulty, interviewType)
-          setGeneratedQuestion(question)
-          onQuestionGenerated(question)
-        } catch (error) {
-          console.error("Error generating question:", error)
-          setError("Failed to generate question. Please try again.")
-        } finally {
-          setIsGenerating(false)
-        }
-      }, 1500)
+      const question = await generateQuestion(
+        selectedSkillNames,
+        difficulty,
+        interviewType
+      );
+      setGeneratedQuestion(question);
+      onQuestionGenerated(question);
     } catch (error) {
-      console.error("Error:", error)
-      setIsGenerating(false)
-      setError("An unexpected error occurred. Please try again.")
+      console.error("Error generating question:", error);
+      let errorMessage = "Failed to generate question. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      alert(errorMessage);
+    } finally {
+      setIsGenerating(false);
     }
-  }
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Question Generator</CardTitle>
-        <CardDescription>Select skills and difficulty level to generate interview questions.</CardDescription>
+        <CardDescription>
+          Select skills and difficulty level to generate interview questions.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
@@ -115,12 +128,18 @@ export default function InterviewQuestionGenerator({
             </Select>
           </div>
 
-          {error && <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md">{error}</div>}
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md">
+              {error}
+            </div>
+          )}
 
           {generatedQuestion && (
             <div>
               <h3 className="text-lg font-medium mb-3">Generated Question</h3>
-              <div className="p-4 bg-muted rounded-md whitespace-pre-wrap">{generatedQuestion}</div>
+              <div className="p-4 bg-muted rounded-md whitespace-pre-wrap">
+                {generatedQuestion}
+              </div>
             </div>
           )}
         </div>
@@ -142,6 +161,5 @@ export default function InterviewQuestionGenerator({
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

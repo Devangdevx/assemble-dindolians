@@ -1,36 +1,43 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import Editor from "@monaco-editor/react"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import Editor from "@monaco-editor/react";
+import { skills } from "./interview-question-generator";
 
 interface CodingEnvironmentProps {
-  code: string
-  onCodeChange: (code: string) => void
-  onEvaluate: () => void
+  code: string;
+  onCodeChange: (code: string) => void;
+  onEvaluate: () => void;
 }
 
-export default function CodingEnvironment({ code, onCodeChange, onEvaluate }: CodingEnvironmentProps) {
-  const [editorCode, setEditorCode] = useState<string>(code || "// Write your solution here")
-  const [language, setLanguage] = useState<string>("javascript")
+export default function CodingEnvironment({
+  code,
+  onCodeChange,
+  onEvaluate,
+}: CodingEnvironmentProps) {
+  const [editorCode, setEditorCode] = useState<string>(
+    code || "// Write your solution here"
+  );
+  const [language, setLanguage] = useState<string>("javascript");
 
   useEffect(() => {
     if (code !== editorCode) {
-      setEditorCode(code)
+      setEditorCode(code);
     }
-  }, [code])
+  }, [code]);
 
   const handleEditorChange = (value: string | undefined) => {
-    const newCode = value || ""
-    setEditorCode(newCode)
-    onCodeChange(newCode)
-  }
+    const newCode = value || "";
+    setEditorCode(newCode);
+    onCodeChange(newCode);
+  };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value)
-  }
+    setLanguage(e.target.value);
+  };
 
   return (
     <div className="space-y-4">
@@ -45,16 +52,19 @@ export default function CodingEnvironment({ code, onCodeChange, onEvaluate }: Co
             onChange={handleLanguageChange}
             className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm"
           >
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="csharp">C#</option>
+            {skills.map((lang) => (
+              <option key={lang.id} value={lang.id}>
+                {lang.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      <div className="border rounded-md overflow-hidden" style={{ height: "500px" }}>
+      <div
+        className="border rounded-md overflow-hidden"
+        style={{ height: "500px" }}
+      >
         <Editor
           height="100%"
           language={language}
@@ -73,7 +83,10 @@ export default function CodingEnvironment({ code, onCodeChange, onEvaluate }: Co
       </div>
 
       <div className="flex justify-end space-x-2">
-        <Button variant="outline" onClick={() => setEditorCode("// Write your solution here")}>
+        <Button
+          variant="outline"
+          onClick={() => setEditorCode("// Write your solution here")}
+        >
           Clear
         </Button>
         <Button onClick={onEvaluate} disabled={!editorCode.trim()}>
@@ -81,6 +94,5 @@ export default function CodingEnvironment({ code, onCodeChange, onEvaluate }: Co
         </Button>
       </div>
     </div>
-  )
+  );
 }
-
