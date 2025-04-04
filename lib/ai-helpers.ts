@@ -1,27 +1,49 @@
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
-export async function generateQuestion(skills: string[], difficulty: string, interviewType: string): Promise<string> {
-  const skillsString = skills.join(", ")
+export async function generateQuestion(
+  skills: string[],
+  difficulty: string,
+  interviewType: string
+): Promise<string> {
+  const skillsString = skills.join(", ");
+  // Map interviewType to experience level or use a default
+  const experienceLevel = interviewType.toLowerCase().includes("senior")
+    ? "senior"
+    : interviewType.toLowerCase().includes("junior")
+    ? "junior"
+    : "mid-level";
+  // Default to 1 question
+  const numberOfQuestions = 1;
 
   const prompt = `
-    Generate a detailed coding interview question for a ${interviewType} interview.
-    Skills to test: ${skillsString}
-    Difficulty level: ${difficulty}
-    
-    The question should include:
-    1. A clear problem statement
-    2. Input/output examples
-    3. Constraints and edge cases
-    4. Expected time and space complexity requirements
-    
-    Format the question in a clear, structured way that would be easy for an interviewer to present.
-  `
+    Generate ${numberOfQuestions} practical ${difficulty} coding questions for a ${experienceLevel} Software Engineer position, specifically focusing on ${skillsString}. Each question should:
+    1. Present a concrete problem that requires writing actual code
+    2. Include clear requirements and constraints
+    3. Specify expected inputs and outputs
+    4. Provide a small example case with solution
+    5. Include at least one edge case to consider
+    6. Be appropriate for a ${experienceLevel} developer's skill level in ${skillsString}
+    7. Focus on practical application rather than theoretical concepts
+    8. Be solvable within a 30-minute interview session
+    9. Require demonstrating knowledge of common patterns, data structures, or algorithms relevant to ${skillsString}
+    10. Include a brief explanation of what skills/knowledge the question is designed to evaluate
+
+    Format each question with:
+    - Problem statement
+    - Input/Output format
+    - Constraints
+    - Example(s)
+    - Edge case consideration
+    - Follow-up question (if the candidate solves it quickly)
+  `;
 
   try {
     // Check if API key exists
     if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OpenAI API key is missing. Please check your environment variables.")
+      throw new Error(
+        "OpenAI API key is missing. Please check your environment variables."
+      );
     }
 
     const { text } = await generateText({
@@ -29,19 +51,22 @@ export async function generateQuestion(skills: string[], difficulty: string, int
       prompt,
       temperature: 0.7,
       maxTokens: 1000,
-    })
+    });
 
-    return text
+    return text;
   } catch (error) {
-    console.error("Error generating question:", error)
+    console.error("Error generating question:", error);
     if (error instanceof Error) {
-      throw new Error(`Failed to generate question: ${error.message}`)
+      throw new Error(`Failed to generate question: ${error.message}`);
     }
-    throw new Error("Failed to generate question")
+    throw new Error("Failed to generate question");
   }
 }
 
-export async function evaluateCode(question: string, code: string): Promise<string> {
+export async function evaluateCode(
+  question: string,
+  code: string
+): Promise<string> {
   const prompt = `
     Evaluate the following code solution for this interview question:
     
@@ -59,12 +84,14 @@ export async function evaluateCode(question: string, code: string): Promise<stri
     5. Potential improvements: How could the solution be optimized?
     
     Format your evaluation in a clear, structured way that would be helpful for an interviewer.
-  `
+  `;
 
   try {
     // Check if API key exists
     if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OpenAI API key is missing. Please check your environment variables.")
+      throw new Error(
+        "OpenAI API key is missing. Please check your environment variables."
+      );
     }
 
     const { text } = await generateText({
@@ -72,19 +99,23 @@ export async function evaluateCode(question: string, code: string): Promise<stri
       prompt,
       temperature: 0.3,
       maxTokens: 1500,
-    })
+    });
 
-    return text
+    return text;
   } catch (error) {
-    console.error("Error evaluating code:", error)
+    console.error("Error evaluating code:", error);
     if (error instanceof Error) {
-      throw new Error(`Failed to evaluate code: ${error.message}`)
+      throw new Error(`Failed to evaluate code: ${error.message}`);
     }
-    throw new Error("Failed to evaluate code")
+    throw new Error("Failed to evaluate code");
   }
 }
 
-export async function generateFollowUpQuestions(question: string, code: string, evaluation: string): Promise<string[]> {
+export async function generateFollowUpQuestions(
+  question: string,
+  code: string,
+  evaluation: string
+): Promise<string[]> {
   const prompt = `
     Based on the following interview question, candidate's code solution, and evaluation:
     
@@ -105,12 +136,14 @@ export async function generateFollowUpQuestions(question: string, code: string, 
     4. Assess their knowledge of related concepts
     
     Return ONLY the questions as a numbered list, without any additional text.
-  `
+  `;
 
   try {
     // Check if API key exists
     if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OpenAI API key is missing. Please check your environment variables.")
+      throw new Error(
+        "OpenAI API key is missing. Please check your environment variables."
+      );
     }
 
     const { text } = await generateText({
@@ -118,25 +151,30 @@ export async function generateFollowUpQuestions(question: string, code: string, 
       prompt,
       temperature: 0.7,
       maxTokens: 800,
-    })
+    });
 
     // Parse the numbered list into an array of questions
     const questions = text
       .split("\n")
       .filter((line) => line.trim().match(/^\d+\.\s/))
-      .map((line) => line.replace(/^\d+\.\s/, "").trim())
+      .map((line) => line.replace(/^\d+\.\s/, "").trim());
 
-    return questions
+    return questions;
   } catch (error) {
-    console.error("Error generating follow-up questions:", error)
+    console.error("Error generating follow-up questions:", error);
     if (error instanceof Error) {
-      throw new Error(`Failed to generate follow-up questions: ${error.message}`)
+      throw new Error(
+        `Failed to generate follow-up questions: ${error.message}`
+      );
     }
-    throw new Error("Failed to generate follow-up questions")
+    throw new Error("Failed to generate follow-up questions");
   }
 }
 
-export async function generateAssessment(position: string, interviewType: string): Promise<string> {
+export async function generateAssessment(
+  position: string,
+  interviewType: string
+): Promise<string> {
   // In a real application, we would pass all the interview data, questions, and code
   const prompt = `
     Generate a comprehensive assessment for a candidate who interviewed for a ${position} position.
@@ -153,12 +191,14 @@ export async function generateAssessment(position: string, interviewType: string
     
     Format the assessment in a professional manner suitable for sharing with the hiring team.
     Include specific examples and observations to support your evaluation.
-  `
+  `;
 
   try {
     // Check if API key exists
     if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OpenAI API key is missing. Please check your environment variables.")
+      throw new Error(
+        "OpenAI API key is missing. Please check your environment variables."
+      );
     }
 
     const { text } = await generateText({
@@ -166,15 +206,14 @@ export async function generateAssessment(position: string, interviewType: string
       prompt,
       temperature: 0.4,
       maxTokens: 1500,
-    })
+    });
 
-    return text
+    return text;
   } catch (error) {
-    console.error("Error generating assessment:", error)
+    console.error("Error generating assessment:", error);
     if (error instanceof Error) {
-      throw new Error(`Failed to generate assessment: ${error.message}`)
+      throw new Error(`Failed to generate assessment: ${error.message}`);
     }
-    throw new Error("Failed to generate assessment")
+    throw new Error("Failed to generate assessment");
   }
 }
-
