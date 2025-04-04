@@ -254,7 +254,7 @@ export default function InterviewSummaryDetail() {
       </div>
     );
   }
-
+  console.log("interviewData.skillScores", interviewData);
   return (
     <div className="container mx-auto py-10 px-4">
       <div className="flex items-center mb-6">

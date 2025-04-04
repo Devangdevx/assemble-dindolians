@@ -114,6 +114,8 @@ export default function AssessmentVisualization({
     return <div>No assessment generated yet.</div>;
   }
 
+  console.log("skillScores", skillScores);
+
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -132,7 +134,7 @@ export default function AssessmentVisualization({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-center">
+                <div className="flex flex-col items-center justify-center">
                   <div className="relative w-32 h-32">
                     {/* Circular progress indicator */}
                     <svg className="w-full h-full" viewBox="0 0 100 100">
@@ -167,16 +169,11 @@ export default function AssessmentVisualization({
                       >
                         {overallScore.toFixed(1)}
                       </text>
-                      <text
-                        x="50"
-                        y="65"
-                        textAnchor="middle"
-                        className="text-xs fill-current text-muted-foreground"
-                      >
-                        out of 10
-                      </text>
                     </svg>
                   </div>
+                  <p className="text-xs fill-current text-muted-foreground">
+                    Out of 10
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -226,10 +223,10 @@ export default function AssessmentVisualization({
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {skillScores.map((item, index) => (
+                {skillScores.map((item: SkillScore, index: number) => (
                   <div key={`${item.skill}-${index}`}>
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-sm font-medium">{item.skill}</span>
+                      <span className="text-sm font-medium">{item?.skill}</span>
                       <span className="text-sm font-medium">
                         {item.score}/10
                       </span>
@@ -364,7 +361,7 @@ export default function AssessmentVisualization({
 // Helper functions to extract data from assessment text
 function extractSkillScores(assessment: string): SkillScore[] {
   if (!assessment) return [];
-
+  console.log("assessment", assessment);
   try {
     // Try to extract skill scores using regex patterns
     // Look for patterns like "JavaScript: 8.5/10" or "JavaScript: 8.5"

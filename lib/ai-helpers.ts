@@ -202,18 +202,46 @@ export async function generateAssessment(
     Generate a comprehensive assessment for a candidate who interviewed for a ${position} position.
     This was a ${interviewType} interview.
     
-    The assessment should include:
-    1. Technical proficiency evaluation
-    2. Problem-solving approach analysis
-    3. Code quality assessment
-    4. Areas of strength
-    5. Areas for improvement
-    6. Overall recommendation (Hire, Consider, Do Not Hire)
-    7. Numerical score (1-10) with breakdown by skill
-    
-    Format the assessment in a professional manner suitable for sharing with the hiring team.
-    Include specific examples and observations to support your evaluation.
-  `;
+    The assessment must follow this exact structure:
+
+    ## Executive Summary
+    [Brief overview of candidate performance]
+
+    ## Technical Proficiency
+    [Detailed assessment of technical skills]
+
+    ## Problem-solving Approach
+    [Analysis of how the candidate approached problems]
+
+    ## Code Quality
+    [Assessment of code structure, readability, and best practices]
+
+    ## Strengths
+    [Bullet points of the candidate's strong areas]
+
+    ## Areas for Improvement
+    [Bullet points of where the candidate could improve]
+
+    ## Skill Scores
+    Technical Skills: [score]/10
+    Problem Solving: [score]/10
+    Code Quality: [score]/10
+    Communication: [score]/10
+    [Add any other relevant skills]
+
+    ## Overall Score
+    Overall: [score]/10
+
+    ## Recommendation: [HIRE, CONSIDER, or DO NOT HIRE]
+
+    [Final thoughts and justification for recommendation]
+
+    Important: 
+    1. Use clear headings exactly as shown above
+    2. Ensure all skill scores are formatted as "Skill Name: X/10" where X is a number between 1-10
+    3. Provide an explicit overall score between 1-10
+    4. Make the recommendation clear by using exactly one of: HIRE, CONSIDER, or DO NOT HIRE
+    `;
 
   try {
     // Check if API key exists
