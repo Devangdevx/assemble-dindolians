@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Edit, Save } from "lucide-react"
-import CandidateComparisonChart from "@/components/candidate-comparison-chart"
-import SkillRadarChart from "@/components/skill-radar-chart"
-import AssessmentVisualization from "@/components/assessment-visualization"
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Edit, Save } from "lucide-react";
+import CandidateComparisonChart from "@/components/candidate-comparison-chart";
+import SkillRadarChart from "@/components/skill-radar-chart";
+import AssessmentVisualization from "@/components/assessment-visualization";
 
 // Mock data for a specific interview
 const mockInterviewData = {
@@ -26,7 +32,8 @@ const mockInterviewData = {
   questions: [
     {
       id: "q1",
-      question: "Implement a function that finds the longest substring without repeating characters in a given string.",
+      question:
+        "Implement a function that finds the longest substring without repeating characters in a given string.",
       skills: ["Algorithms", "JavaScript"],
       difficulty: "Medium",
       candidateCode: `function lengthOfLongestSubstring(s) {
@@ -211,50 +218,59 @@ The candidate demonstrated strong technical skills and problem-solving abilities
   },
   interviewerNotes:
     "John showed excellent problem-solving skills and was able to articulate his thought process clearly. He was receptive to feedback and quick to implement suggestions. His React knowledge is strong, particularly in functional components and hooks. Would be a good fit for our frontend team.",
-}
+};
 
 export default function InterviewSummaryDetail() {
-  const router = useRouter()
-  const params = useParams()
-  const [interviewData, setInterviewData] = useState<any>(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedAssessment, setEditedAssessment] = useState("")
-  const [activeTab, setActiveTab] = useState("overview")
+  const router = useRouter();
+  const params = useParams();
+  const [interviewData, setInterviewData] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedAssessment, setEditedAssessment] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     // In a real application, we would fetch the interview data from an API
     // For now, we'll use mock data
-    setInterviewData(mockInterviewData)
-    setEditedAssessment(mockInterviewData.assessment)
-  }, [params.id])
+    setInterviewData(mockInterviewData);
+    setEditedAssessment(mockInterviewData.assessment);
+  }, [params.id]);
 
   const handleSaveAssessment = () => {
     setInterviewData({
       ...interviewData,
       assessment: editedAssessment,
-    })
-    setIsEditing(false)
-  }
+    });
+    setIsEditing(false);
+  };
 
   const handleBackToDashboard = () => {
-    router.push("/dashboard")
-  }
+    router.push("/dashboard");
+  };
 
   if (!interviewData) {
-    return <div className="container mx-auto py-10 px-4">Loading interview data...</div>
+    return (
+      <div className="container mx-auto py-10 px-4">
+        Loading interview data...
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto py-10 px-4">
       <div className="flex items-center mb-6">
-        <Button variant="ghost" onClick={handleBackToDashboard} className="mr-2">
+        <Button
+          variant="ghost"
+          onClick={handleBackToDashboard}
+          className="mr-2"
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Dashboard
         </Button>
         <div className="ml-2">
           <h1 className="text-3xl font-bold">{interviewData.candidateName}</h1>
           <p className="text-muted-foreground">
-            {interviewData.position} | {new Date(interviewData.date).toLocaleDateString()}
+            {interviewData.position} |{" "}
+            {new Date(interviewData.date).toLocaleDateString()}
           </p>
         </div>
       </div>
@@ -262,7 +278,9 @@ export default function InterviewSummaryDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Overall Score</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Overall Score
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{interviewData.score}/10</div>
@@ -270,10 +288,10 @@ export default function InterviewSummaryDetail() {
               <Badge
                 variant={
                   interviewData.recommendation === "Hire"
-                    ? "success"
+                    ? "default"
                     : interviewData.recommendation === "Consider"
-                      ? "warning"
-                      : "destructive"
+                    ? "secondary"
+                    : "destructive"
                 }
               >
                 {interviewData.recommendation}
@@ -284,21 +302,33 @@ export default function InterviewSummaryDetail() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Interview Type</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Interview Type
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-medium">{interviewData.interviewType}</div>
-            <p className="text-sm text-muted-foreground mt-1">{interviewData.questions.length} questions asked</p>
+            <div className="text-xl font-medium">
+              {interviewData.interviewType}
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {interviewData.questions.length} questions asked
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Contact Information</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Contact Information
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-medium">{interviewData.candidateEmail}</div>
-            <p className="text-sm text-muted-foreground mt-1">{interviewData.candidateName}</p>
+            <div className="text-xl font-medium">
+              {interviewData.candidateEmail}
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {interviewData.candidateName}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -318,7 +348,9 @@ export default function InterviewSummaryDetail() {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
                     <CardTitle>Assessment</CardTitle>
-                    <CardDescription>AI-generated evaluation of the candidate</CardDescription>
+                    <CardDescription>
+                      AI-generated evaluation of the candidate
+                    </CardDescription>
                   </div>
                   <div className="flex space-x-2">
                     {isEditing ? (
@@ -327,7 +359,11 @@ export default function InterviewSummaryDetail() {
                         Save
                       </Button>
                     ) : (
-                      <Button size="sm" variant="outline" onClick={() => setIsEditing(true)}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setIsEditing(true)}
+                      >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
                       </Button>
@@ -359,7 +395,9 @@ export default function InterviewSummaryDetail() {
               <Card className="mb-6">
                 <CardHeader>
                   <CardTitle>Skill Breakdown</CardTitle>
-                  <CardDescription>Performance across different skills</CardDescription>
+                  <CardDescription>
+                    Performance across different skills
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <SkillRadarChart skillScores={interviewData.skillScores} />
@@ -369,10 +407,14 @@ export default function InterviewSummaryDetail() {
               <Card>
                 <CardHeader>
                   <CardTitle>Interviewer Notes</CardTitle>
-                  <CardDescription>Additional observations from the interviewer</CardDescription>
+                  <CardDescription>
+                    Additional observations from the interviewer
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="whitespace-pre-wrap">{interviewData.interviewerNotes}</div>
+                  <div className="whitespace-pre-wrap">
+                    {interviewData.interviewerNotes}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -383,7 +425,9 @@ export default function InterviewSummaryDetail() {
           <Card>
             <CardHeader>
               <CardTitle>Interview Questions & Code</CardTitle>
-              <CardDescription>Questions asked during the interview and candidate's solutions</CardDescription>
+              <CardDescription>
+                Questions asked during the interview and candidate's solutions
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-8">
@@ -391,7 +435,9 @@ export default function InterviewSummaryDetail() {
                   <div key={q.id} className="border rounded-lg p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-lg font-medium">Question {index + 1}</h3>
+                        <h3 className="text-lg font-medium">
+                          Question {index + 1}
+                        </h3>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {q.skills.map((skill: string) => (
                             <Badge key={skill} variant="outline">
@@ -404,20 +450,32 @@ export default function InterviewSummaryDetail() {
                     </div>
 
                     <div className="mb-4">
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">Problem Statement</h4>
-                      <div className="p-4 bg-muted rounded-md whitespace-pre-wrap">{q.question}</div>
+                      <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                        Problem Statement
+                      </h4>
+                      <div className="p-4 bg-muted rounded-md whitespace-pre-wrap">
+                        {q.question}
+                      </div>
                     </div>
 
                     <div className="mb-4">
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">Candidate's Solution</h4>
+                      <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                        Candidate's Solution
+                      </h4>
                       <div className="p-4 bg-black text-white rounded-md overflow-x-auto">
-                        <pre className="whitespace-pre-wrap">{q.candidateCode}</pre>
+                        <pre className="whitespace-pre-wrap">
+                          {q.candidateCode}
+                        </pre>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">AI Evaluation</h4>
-                      <div className="p-4 bg-muted rounded-md whitespace-pre-wrap">{q.evaluation}</div>
+                      <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                        AI Evaluation
+                      </h4>
+                      <div className="p-4 bg-muted rounded-md whitespace-pre-wrap">
+                        {q.evaluation}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -430,7 +488,9 @@ export default function InterviewSummaryDetail() {
           <Card>
             <CardHeader>
               <CardTitle>Detailed Skill Analysis</CardTitle>
-              <CardDescription>In-depth evaluation of technical and soft skills</CardDescription>
+              <CardDescription>
+                In-depth evaluation of technical and soft skills
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -438,17 +498,24 @@ export default function InterviewSummaryDetail() {
                   <h3 className="text-lg font-medium mb-4">Technical Skills</h3>
                   <div className="space-y-4">
                     {Object.entries(interviewData.skillScores)
-                      .filter(([skill]) => !["Communication", "Problem Solving"].includes(skill))
+                      .filter(
+                        ([skill]) =>
+                          !["Communication", "Problem Solving"].includes(skill)
+                      )
                       .map(([skill, score]) => (
                         <div key={skill}>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-sm font-medium">{skill}</span>
-                            <span className="text-sm font-medium">{score}/10</span>
+                            <span className="text-sm font-medium">
+                              {String(score)}/10
+                            </span>
                           </div>
                           <div className="w-full bg-muted rounded-full h-2.5">
                             <div
                               className="bg-primary h-2.5 rounded-full"
-                              style={{ width: `${(Number(score) / 10) * 100}%` }}
+                              style={{
+                                width: `${(Number(score) / 10) * 100}%`,
+                              }}
                             ></div>
                           </div>
                         </div>
@@ -457,20 +524,28 @@ export default function InterviewSummaryDetail() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-medium mb-4">Soft Skills & Problem Solving</h3>
+                  <h3 className="text-lg font-medium mb-4">
+                    Soft Skills & Problem Solving
+                  </h3>
                   <div className="space-y-4">
                     {Object.entries(interviewData.skillScores)
-                      .filter(([skill]) => ["Communication", "Problem Solving"].includes(skill))
+                      .filter(([skill]) =>
+                        ["Communication", "Problem Solving"].includes(skill)
+                      )
                       .map(([skill, score]) => (
                         <div key={skill}>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-sm font-medium">{skill}</span>
-                            <span className="text-sm font-medium">{score}/10</span>
+                            <span className="text-sm font-medium">
+                              {String(score)}/10
+                            </span>
                           </div>
                           <div className="w-full bg-muted rounded-full h-2.5">
                             <div
                               className="bg-primary h-2.5 rounded-full"
-                              style={{ width: `${(Number(score) / 10) * 100}%` }}
+                              style={{
+                                width: `${(Number(score) / 10) * 100}%`,
+                              }}
                             ></div>
                           </div>
                         </div>
@@ -487,16 +562,18 @@ export default function InterviewSummaryDetail() {
             <CardHeader>
               <CardTitle>Candidate Comparison</CardTitle>
               <CardDescription>
-                Compare this candidate with others who interviewed for similar positions
+                Compare this candidate with others who interviewed for similar
+                positions
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <CandidateComparisonChart candidateName={interviewData.candidateName} />
+              <CandidateComparisonChart
+                candidateName={interviewData.candidateName}
+              />
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
-

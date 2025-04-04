@@ -43,13 +43,22 @@ export default function AssessmentVisualization({
 
   // Extract metrics from assessment text whenever it changes
   useEffect(() => {
-    if (assessment) {
-      const extractedSkills = extractSkillScores(assessment);
-      setSkillScores(extractedSkills);
-      setOverallScore(calculateOverallScore(extractedSkills));
-      setRecommendation(extractRecommendation(assessment));
+    // Clear previous assessment data when generating new assessment
+    if (isGenerating) {
+      setSkillScores([]);
+      setOverallScore(0);
+      setRecommendation("");
+      return;
     }
-  }, [assessment]);
+
+    if (!assessment) {
+      return;
+    }
+    const extractedSkills = extractSkillScores(assessment);
+    setSkillScores(extractedSkills);
+    setOverallScore(calculateOverallScore(extractedSkills));
+    setRecommendation(extractRecommendation(assessment));
+  }, [assessment, isGenerating]);
 
   const handleDownloadPDF = async () => {
     setIsExporting(true);
@@ -217,8 +226,8 @@ export default function AssessmentVisualization({
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {skillScores.map((item) => (
-                  <div key={item.skill}>
+                {skillScores.map((item, index) => (
+                  <div key={`${item.skill}-${index}`}>
                     <div className="flex justify-between items-center mb-1">
                       <span className="text-sm font-medium">{item.skill}</span>
                       <span className="text-sm font-medium">
