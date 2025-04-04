@@ -20,8 +20,24 @@ export async function generateQuestion(
   // Default to 1 question
   const numberOfQuestions = 1;
 
-  const prompt = `
-    Generate ${numberOfQuestions} practical ${difficulty} coding questions for a ${experienceLevel} Software Engineer position, specifically focusing on ${skillsString}. Each question should:
+  // Customize the prompt based on interview type
+  let promptTemplate = `
+    Generate ${numberOfQuestions} practical ${difficulty} coding questions for a ${experienceLevel} Software Engineer position, specifically focusing on ${skillsString}.`;
+
+  // Add specific structure based on interview type
+  if (interviewType.toLowerCase().includes("algorithm")) {
+    promptTemplate += `
+    Focus on algorithm challenges that test problem-solving abilities with ${skillsString}.`;
+  } else if (interviewType.toLowerCase().includes("system")) {
+    promptTemplate += `
+    Focus on system design challenges relevant to ${skillsString} implementation.`;
+  } else if (interviewType.toLowerCase().includes("behavioral")) {
+    promptTemplate += `
+    Focus on technical scenarios that would reveal behavioral traits and soft skills in ${skillsString} environments.`;
+  }
+
+  promptTemplate += `
+    Each question should:
     1. Present a concrete problem that requires writing actual code
     2. Include clear requirements and constraints
     3. Specify expected inputs and outputs
@@ -52,7 +68,7 @@ export async function generateQuestion(
 
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-4o", // or gpt-4 / gpt-3.5-turbo
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: promptTemplate }],
       temperature: 0.7,
       max_tokens: 1000,
     });
