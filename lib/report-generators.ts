@@ -1,5 +1,3 @@
-// This file contains functions to generate PDF and CSV reports
-
 import { jsPDF } from "jspdf";
 // Import jspdf-autotable properly
 import autoTable from "jspdf-autotable";
@@ -56,8 +54,8 @@ export async function generatePDF(data: ReportData): Promise<void> {
     `${item.score}/10`,
   ]);
 
-  // Now we can use autoTable without the @ts-ignore comment
-  doc.autoTable(doc, {
+  // Fixed autoTable call - remove the doc parameter
+  autoTable(doc, {
     startY: 130,
     head: [["Skill", "Score"]],
     body: skillTableData,
